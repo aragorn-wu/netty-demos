@@ -16,24 +16,19 @@
 package com.git.wuqf.netty.framework.server;
 
 
-import com.git.wuqf.netty.framework.client.TelnetClientInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 
 
 public class NettyServer {
 
 
     private ServerBootstrap bootstrap;
-
-
-    private ChannelHandler channelHandler;
-
     private Channel channel;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
@@ -46,25 +41,15 @@ public class NettyServer {
         bootstrap = new ServerBootstrap();
         bootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
-                .option(ChannelOption.SO_BACKLOG, 1024)
-                .childOption(ChannelOption.SO_KEEPALIVE, true)
-                .childOption(ChannelOption.TCP_NODELAY, true)
-                .childHandler(new TelnetServerInitializer());
+                .handler(new LoggingHandler(LogLevel.INFO))
+                .childHandler(new ObjectServerChannelInitializer());
         channel = bootstrap.bind(6666).sync().channel();
-
-
+        channel.closeFuture().sync();
     }
 
     public void stop() {
-        if (null == channel) {
-            return;
-        }
         bossGroup.shutdownGracefully();
         workerGroup.shutdownGracefully();
-        channel.closeFuture().syncUninterruptibly();
-        bossGroup = null;
-        workerGroup = null;
-        channel = null;
     }
 
 }

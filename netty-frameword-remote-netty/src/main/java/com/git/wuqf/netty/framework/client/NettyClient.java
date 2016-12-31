@@ -23,6 +23,8 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 
 
 public class NettyClient {
@@ -30,7 +32,7 @@ public class NettyClient {
 
     private Bootstrap bootstrap;
 
-    private volatile Channel channel; // volatile, please copy reference to use
+    private volatile Channel channel;
 
     private EventLoopGroup workerGroup;
 
@@ -41,8 +43,11 @@ public class NettyClient {
                 .group(workerGroup)
                 .channel(NioSocketChannel.class)
                 .option(ChannelOption.SO_KEEPALIVE, true)
-                .option(ChannelOption.TCP_NODELAY, true).handler(new TelnetClientInitializer());
-        channel = bootstrap.connect("localhost", 6666).sync().channel();
+                .option(ChannelOption.TCP_NODELAY, true)
+                .handler(new LoggingHandler(LogLevel.INFO))
+                .handler(new ObjectClientInitializer());
+        channel = bootstrap.connect("127.0.0.1", 8007).sync().channel();
+        channel.closeFuture().sync();
 
     }
 
@@ -63,7 +68,5 @@ public class NettyClient {
         }
         workerGroup.shutdownGracefully();
         channel.closeFuture().syncUninterruptibly();
-        workerGroup = null;
-        channel = null;
     }
 }

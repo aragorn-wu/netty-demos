@@ -10,7 +10,6 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by wuqf on 16-12-30.
@@ -24,20 +23,7 @@ public class ObjectClientInitializer extends ChannelInitializer<SocketChannel> {
         ChannelPipeline pipeline = socketChannel.pipeline();
 
         pipeline.addLast(new ObjectEncoder());
-        pipeline.addLast(new ObjectDecoder(ClassResolvers.cacheDisabled(this.getClass().getClassLoader())));
-    }
-
-    public Response getResponse(final long messageId) {
-        Response result = null;
-        responseMap.putIfAbsent(messageId, new LinkedBlockingQueue<Response>(1));
-        try {
-            result = responseMap.get(messageId).take();
-
-        } catch (final InterruptedException ex) {
-            ex.printStackTrace();
-        } finally {
-            responseMap.remove(messageId);
-        }
-        return result;
+        pipeline.addLast(new ObjectDecoder(ClassResolvers.cacheDisabled(null)));
+        pipeline.addLast(new NettyClientDispatchHandler());
     }
 }

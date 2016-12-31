@@ -1,20 +1,4 @@
 # Created by .ignore support plugin (hsz.mobi)
-### Eclipse template
-
-.metadata
-bin/
-tmp/
-*.tmp
-*.bak
-*.swp
-*~.nib
-local.properties
-.settings/
-.loadpath
-.recommenders
-
-# Eclipse Core
-.project
 
 # External tool builders
 .externalToolBuilders/
@@ -128,4 +112,7 @@ hs_err_pid*
 .gitignore
 .idea/
 netty-framework.iml
-src/
+netty-frameword-remote-api/netty-frameword-remote-api.iml
+netty-frameword-remote-api/target/
+netty-frameword-remote-netty/netty-frameword-remote-netty.iml
+netty-frameword-remote-netty/target/

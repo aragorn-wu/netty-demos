@@ -1,68 +1,54 @@
 package com.git.wuqf.netty.framework.client;
 
 import com.git.wuqf.netty.framework.exchange.Response;
-import com.git.wuqf.netty.framework.server.Server;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * Created by wuqf on 16-12-30.
  */
-public class NettyClientDispatchHandler extends SimpleChannelInboundHandler<Response> {
+public class NettyClientDispatchHandler extends ChannelInboundHandlerAdapter {
 
     private final ConcurrentHashMap<Long, BlockingQueue<Response>> responseMap = new ConcurrentHashMap<>();
 
-//    @Override
-//    public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) throws Exception {
-//        if (msg instanceof Request) {
-//            Request request = (Request) msg;
-//            responseMap.putIfAbsent(request.getMessageId(), new LinkedBlockingQueue<Response>(1));
-//        }
-//        super.write(ctx, msg, promise);
-//    }
-//
-//    @Override
-//    protected void messageReceived(final ChannelHandlerContext ctx, final Response response) throws Exception {
-//        BlockingQueue<Response> queue = responseMap.get(response.getMessageId());
-//        queue.add(response);
-//    }
+    private final List<Integer> firstMessage;
 
+    /**
+     * Creates a client-side handler.
+     */
+    public NettyClientDispatchHandler() {
+        firstMessage = new ArrayList<Integer>(100);
+        for (int i = 0; i < 100; i ++) {
+            firstMessage.add(Integer.valueOf(i));
+        }
+    }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, Response response) throws Exception {
-        BlockingQueue<Response> queue = responseMap.get(response.getMessageId());
-        queue.add(response);
+    public void channelActive(ChannelHandlerContext ctx) {
+        // Send the first message if this handler is a client-side handler.
+        ctx.writeAndFlush(firstMessage);
     }
 
-    public Response getResponse(final long messageId) {
-        Response result = null;
-        responseMap.putIfAbsent(messageId, new LinkedBlockingQueue<Response>(1));
-        try {
-            result = responseMap.get(messageId).take();
-            if (null == result) {
-                result = getSystemMessage();
-            }
-        } catch (final InterruptedException ex) {
-            ex.printStackTrace();
-        } finally {
-            responseMap.remove(messageId);
-        }
-        return result;
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) {
+        ctx.write(msg);
     }
 
-    private Response getSystemMessage() {
-        try {
-            return responseMap.get(Server.SYSTEM_MESSAGE_ID).poll(5, SECONDS);
-        } catch (final InterruptedException ex) {
-            ex.printStackTrace();
-            return null;
-        }
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) {
+        ctx.flush();
     }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        cause.printStackTrace();
+        ctx.close();
+    }
+
 }
 
