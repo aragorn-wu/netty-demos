@@ -32,17 +32,17 @@ public class NettyServer {
     private Channel channel;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
-
+    private MTServerChannelInitializer initializer=new MTServerChannelInitializer();
 
     protected void start() throws Throwable {
-        bossGroup = new NioEventLoopGroup();
+        bossGroup = new NioEventLoopGroup(1);
         workerGroup = new NioEventLoopGroup();
 
         bootstrap = new ServerBootstrap();
         bootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
                 .handler(new LoggingHandler(LogLevel.INFO))
-                .childHandler(new ObjectServerChannelInitializer());
+                .childHandler(initializer);
         channel = bootstrap.bind(6666).sync().channel();
         channel.closeFuture().sync();
     }

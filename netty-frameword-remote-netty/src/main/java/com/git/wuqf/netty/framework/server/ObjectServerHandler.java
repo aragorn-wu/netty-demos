@@ -6,7 +6,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 /**
  * Created by wuqf on 16-12-31.
  */
-public class NettyServerDispatchHandler extends ChannelInboundHandlerAdapter {
+public class ObjectServerHandler extends ChannelInboundHandlerAdapter {
 
 
     @Override

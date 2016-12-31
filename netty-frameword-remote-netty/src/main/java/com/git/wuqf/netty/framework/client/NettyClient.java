@@ -36,6 +36,8 @@ public class NettyClient {
 
     private EventLoopGroup workerGroup;
 
+    private MTClientInitializer initializer=new MTClientInitializer();
+
     public void connect() throws Throwable {
 
         workerGroup = new NioEventLoopGroup();
@@ -45,20 +47,16 @@ public class NettyClient {
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.TCP_NODELAY, true)
                 .handler(new LoggingHandler(LogLevel.INFO))
-                .handler(new ObjectClientInitializer());
-        channel = bootstrap.connect("127.0.0.1", 8007).sync().channel();
-        channel.closeFuture().sync();
-
+                .handler(initializer);
+        channel = bootstrap.connect("127.0.0.1", 6666).sync().channel();
+//        channel.closeFuture().sync();
     }
+
 
     public Response send(final Request request) {
         channel.writeAndFlush(request);
-        return null;
-    }
-
-    public Response send(final String request) {
-        channel.writeAndFlush(request);
-        return null;
+        Response response= initializer.getResponse(request.getMessageId());
+        return response;
     }
 
 

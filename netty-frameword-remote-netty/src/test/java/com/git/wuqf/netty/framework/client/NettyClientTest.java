@@ -19,11 +19,12 @@ public class NettyClientTest {
 //                }
 //            }).run();
 //        }
-//        excutor();
+        excutor();
     }
+
     public static void excutor(){
 //        for(int i=0;i<10000;i++){
-            Request request=new Request(String.class,"xx");
+            Request request=new Request("xx");
             nettyClient.send(request);
 //        }
 //        nettyClient.send("abc\r\n");
