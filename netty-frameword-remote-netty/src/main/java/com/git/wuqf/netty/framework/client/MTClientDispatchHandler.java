@@ -1,6 +1,7 @@
 package com.git.wuqf.netty.framework.client;
 
 import com.git.wuqf.netty.framework.exchange.Response;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
@@ -11,17 +12,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Created by wuqf on 16-12-30.
  */
+@ChannelHandler.Sharable
 public class MTClientDispatchHandler extends ChannelInboundHandlerAdapter {
 
-    private final ConcurrentHashMap<Long, BlockingQueue<Response>> responseMap = new ConcurrentHashMap<>();
-
-//    @Override
-//    public void channelActive(ChannelHandlerContext ctx) {
-//
-//        Request request=new Request("1af");
-//        ctx.writeAndFlush(request);
-//        responseMap.putIfAbsent(request.getMessageId(), new LinkedBlockingQueue<Response>(1));
-//    }
+    private final ConcurrentHashMap<String, BlockingQueue<Response>> responseMap = new ConcurrentHashMap<>();
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
@@ -29,6 +23,9 @@ public class MTClientDispatchHandler extends ChannelInboundHandlerAdapter {
         if(msg instanceof Response){
             response=(Response)msg;
             BlockingQueue<Response> queue = responseMap.get(response.getMessageId());
+            if(queue==null) {
+                queue=new LinkedBlockingQueue<>();
+            }
             queue.add(response);
         }
     }
@@ -40,7 +37,7 @@ public class MTClientDispatchHandler extends ChannelInboundHandlerAdapter {
         ctx.close();
     }
 
-    public Response getResponse(final long messageId) {
+    public Response getResponse(final String messageId) {
         Response result=null;
         responseMap.putIfAbsent(messageId, new LinkedBlockingQueue<Response>(1));
         try {

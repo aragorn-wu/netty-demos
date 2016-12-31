@@ -24,7 +24,7 @@ public class MTClientInitializer extends ChannelInitializer<SocketChannel> {
         pipeline.addLast(handler);
     }
 
-    public Response getResponse(final long messageId) {
+    public Response getResponse(final String messageId) {
         return handler.getResponse(messageId);
     }
 }
