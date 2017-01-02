@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.git.wuqf.netty.framework.server;
+package com.git.wuqf.netty.framework.server.cs;
 
 
 import io.netty.bootstrap.ServerBootstrap;
@@ -25,16 +25,16 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
 
-public class NettyServer {
+public class CSServer {
 
 
     private ServerBootstrap bootstrap;
     private Channel channel;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
-    private MTServerChannelInitializer initializer=new MTServerChannelInitializer();
+    private CSServerInitializer initializer=new CSServerInitializer();
 
-    protected void start() throws Throwable {
+    public void start() throws Throwable {
         bossGroup = new NioEventLoopGroup(1);
         workerGroup = new NioEventLoopGroup();
 

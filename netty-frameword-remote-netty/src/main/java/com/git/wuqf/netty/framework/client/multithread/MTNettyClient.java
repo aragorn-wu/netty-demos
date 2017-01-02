@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.git.wuqf.netty.framework.client;
+package com.git.wuqf.netty.framework.client.multithread;
 
 import com.git.wuqf.netty.framework.exchange.Request;
 import com.git.wuqf.netty.framework.exchange.Response;
@@ -27,7 +27,7 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
 
-public class NettyClient {
+public class MTNettyClient {
 
 
     private Bootstrap bootstrap;

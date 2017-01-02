@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package com.git.wuqf.netty.framework.client;
+package com.git.wuqf.netty.framework.client.cs;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -26,12 +26,12 @@ import io.netty.handler.codec.string.StringEncoder;
 /**
  * Creates a newly configured {@link ChannelPipeline} for a new channel.
  */
-public class TelnetClientInitializer extends ChannelInitializer<SocketChannel> {
+public class CSClientInitializer extends ChannelInitializer<SocketChannel> {
 
     private static final StringDecoder DECODER = new StringDecoder();
     private static final StringEncoder ENCODER = new StringEncoder();
 
-    private static final TelnetClientHandler CLIENT_HANDLER = new TelnetClientHandler();
+    private static final CSClientHandler handler = new CSClientHandler();
 
 
     @Override
@@ -44,6 +44,11 @@ public class TelnetClientInitializer extends ChannelInitializer<SocketChannel> {
         pipeline.addLast(ENCODER);
 
         // and then business logic.
-        pipeline.addLast(CLIENT_HANDLER);
+        pipeline.addLast(handler);
+    }
+
+
+    public String getResponse(final String messageId) {
+        return handler.getResponse(messageId);
     }
 }

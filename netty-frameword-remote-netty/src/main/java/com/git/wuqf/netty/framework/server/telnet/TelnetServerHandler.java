@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package com.git.wuqf.netty.framework.server;
+package com.git.wuqf.netty.framework.server.telnet;
 
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -62,30 +62,6 @@ public class TelnetServerHandler extends SimpleChannelInboundHandler<String> {
         }
     }
 
-//    @Override
-//    protected void messageReceived(ChannelHandlerContext ctx, String request) throws Exception {
-//        String response;
-//        boolean close = false;
-//        if (request.isEmpty()) {
-//            response = "Please type something.\r\n";
-//        } else if ("bye".equals(request.toLowerCase())) {
-//            response = "Have a good day!\r\n";
-//            close = true;
-//        } else {
-//            response = "Did you say '" + request + "'?\r\n";
-//        }
-//
-//        // We do not need to write a ChannelBuffer here.
-//        // We know the encoder inserted at TelnetPipelineFactory will do the conversion.
-//        ChannelFuture future = ctx.write(response);
-//
-//        // Close the connection after sending 'Have a good day!'
-//        // if the client has sent 'bye'.
-//        if (close) {
-//            future.addListener(ChannelFutureListener.CLOSE);
-//        }
-//    }
-
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
         ctx.flush();
@@ -96,4 +72,6 @@ public class TelnetServerHandler extends SimpleChannelInboundHandler<String> {
         cause.printStackTrace();
         ctx.close();
     }
+
+
 }

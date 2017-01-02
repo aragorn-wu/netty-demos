@@ -1,4 +1,4 @@
-package com.git.wuqf.netty.framework.server;
+package com.git.wuqf.netty.framework.server.multithread;
 
 import com.git.wuqf.netty.framework.exchange.Request;
 import com.git.wuqf.netty.framework.exchange.Response;

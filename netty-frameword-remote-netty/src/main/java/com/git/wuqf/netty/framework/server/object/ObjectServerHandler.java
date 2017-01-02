@@ -1,4 +1,4 @@
-package com.git.wuqf.netty.framework.server;
+package com.git.wuqf.netty.framework.server.object;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;

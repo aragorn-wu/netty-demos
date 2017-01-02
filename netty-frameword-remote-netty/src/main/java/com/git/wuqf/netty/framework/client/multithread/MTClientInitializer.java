@@ -1,4 +1,4 @@
-package com.git.wuqf.netty.framework.client;
+package com.git.wuqf.netty.framework.client.multithread;
 
 import com.git.wuqf.netty.framework.exchange.Response;
 import io.netty.channel.ChannelInitializer;
@@ -8,15 +8,12 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * Created by wuqf on 16-12-30.
  */
-public class ObjectClientInitializer extends ChannelInitializer<SocketChannel> {
+public class MTClientInitializer extends ChannelInitializer<SocketChannel> {
 
-    private final ConcurrentHashMap<Long, BlockingQueue<Response>> responseMap = new ConcurrentHashMap<>();
+    private MTClientDispatchHandler handler=new MTClientDispatchHandler();
 
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {
@@ -24,6 +21,10 @@ public class ObjectClientInitializer extends ChannelInitializer<SocketChannel> {
 
         pipeline.addLast(new ObjectEncoder());
         pipeline.addLast(new ObjectDecoder(ClassResolvers.cacheDisabled(null)));
-        pipeline.addLast(new ObjectClientHandler());
+        pipeline.addLast(handler);
+    }
+
+    public Response getResponse(final String messageId) {
+        return handler.getResponse(messageId);
     }
 }
