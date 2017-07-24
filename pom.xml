@@ -5,14 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.git.wuqf</groupId>
-    <artifactId>netty-framework</artifactId>
+    <artifactId>netty-demos</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>netty-frameword-remote-api</module>
-        <module>netty-frameword-remote-netty</module>
-    </modules>
 
+        <module>netty-rpc</module>
+    </modules>
 
 
     <properties>
@@ -89,4 +88,18 @@
             <version>${lombok.version}</version>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
